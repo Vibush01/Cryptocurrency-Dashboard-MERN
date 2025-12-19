@@ -9,10 +9,6 @@
 
 A full-stack cryptocurrency dashboard that tracks the top 10 coins using the **CoinGecko API**. It features automated background data collection, historical tracking, and a clean, responsive UI.
 
-## 🔗 Live Demo
-* **Frontend (Netlify):** [https://crypto-top10-coins.netlify.app](https://crypto-top10-coins.netlify.app)
-* **Backend (Render):** [https://crypto-dashboard-server.onrender.com/api](https://crypto-dashboard-server.onrender.com/api)
-
 ## 🚀 Features
 
 * **Real-Time Dashboard:** Displays the current price, market cap, and changes for the top 10 cryptocurrencies.
