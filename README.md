@@ -1,40 +1,58 @@
-<----Tech Stack ----> 
-Frontend (Client)
-React (with Vite) - npm create vite@latest .
-Tailwind CSS (for styling) - npm i tailwindcss @tailwindcss/vite
-Axios (for API requests) - npm i axios
-dotenv (for environment variables) - npm install dotenv
+# 🪙 CryptoTop10 - Real-Time Cryptocurrency Tracker
 
-Backend (Server)
-Node.js
-Express (for the REST API) - npm i express
-Mongoose (for MongoDB object modeling) npm i mongoose
-node-cron (for task scheduling) npm i node-cron
-dotenv (for environment variables) - npm install dotenv
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Netlify](https://img.shields.io/badge/Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)
+![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
 
-Database
-MongoDB (using MongoDB Atlas) - created a project named (Crypto report and cluster with default name cluster0 and allowed access from anywhere )
+A full-stack cryptocurrency dashboard that tracks the top 10 coins using the **CoinGecko API**. It features automated background data collection, historical tracking, and a clean, responsive UI.
 
+## 🔗 Live Demo
+* **Frontend (Netlify):** [https://crypto-top10-coins.netlify.app](https://crypto-top10-coins.netlify.app)
+* **Backend (Render):** [https://crypto-dashboard-server.onrender.com/api](https://crypto-dashboard-server.onrender.com/api)
 
-<---- How Cron jobs are working ---->
-The server uses node-cron to automatically manage data collection in server/automation/scheduler.js.
+## 🚀 Features
 
-30-Minute Scheduler (*/30 * * * *):
-This job runs every 30 minutes.
-It fetches the latest data for the top 10 coins from the CoinGecko API.
-It deletes all data in the CurrentData collection.
-It inserts the new data.
-This ensures the main dashboard always shows fresh, real-time data.
+* **Real-Time Dashboard:** Displays the current price, market cap, and changes for the top 10 cryptocurrencies.
+* **Automated Data Fetching:** Backend cron jobs automatically fetch data to keep the database fresh without user intervention.
+* **Historical Data Tracking:** Archives price data hourly to visualize trends over time.
+* **Manual Snapshot:** Users can trigger a manual save of current prices to the history log.
+* **Coin History View:** View detailed historical data for specific coins.
 
-60-Minute Scheduler (0 * * * *):
-This job runs at the start of every hour.
-It fetches the latest data for the top 10 coins.
-It appends this data as new documents into the HistoryData collection.
-This creates a historical log of coin prices over time, which powers the "View History" feature and the manual "Save Snapshot" button.
+## 🛠️ Tech Stack
 
+### Frontend (Client)
+* **Framework:** React (Vite)
+* **Styling:** Tailwind CSS
+* **HTTP Client:** Axios
+* **Deployment:** Netlify
 
-screenshot - https://drive.google.com/drive/folders/18xOfKj4ShEcsKiQCw5ia49jDrq6dqYU1?usp=drive_link
+### Backend (Server)
+* **Runtime:** Node.js & Express.js
+* **Database:** MongoDB (Atlas)
+* **ODM:** Mongoose
+* **Automation:** `node-cron` (Task Scheduling)
+* **External API:** CoinGecko
+* **Deployment:** Render
 
-Deployment
-Frontend: Netlify - https://crypto-top10-coins.netlify.app
-Backend: Render - https://crypto-dashboard-server.onrender.com/api
+## ⚙️ Backend Automation (Cron Jobs)
+
+The backend utilizes `node-cron` to manage data consistency and history automatically.
+
+| Frequency | Cron Expression | Function | Logic |
+| :--- | :--- | :--- | :--- |
+| **Every 30 Mins** | `*/30 * * * *` | **Refresh Dashboard** | Fetches fresh data from CoinGecko, **deletes** the old `CurrentData`, and inserts the new batch. This ensures the main view is always up-to-date. |
+| **Every 60 Mins** | `0 * * * *` | **Archive History** | Fetches fresh data and **appends** it to the `HistoryData` collection. This creates a permanent log for analyzing price trends over time. |
+
+**Snippet from `scheduler.js`:**
+```javascript
+// 30 Mins schedule - Refreshes "Current" View
+cron.schedule('*/30 * * * *', async () => {
+    const coinData = await fetchTopTenCoins();
+    if(coinData){
+        await CurrentData.deleteMany({}); // Wipe old data
+        await CurrentData.insertMany(coinData); // Insert new
+    }
+});
